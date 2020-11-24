@@ -14,6 +14,7 @@ use app\admin\validate\AdminUser as AdminUserRule;
 use app\admin\service\AdminUser as AdminUserService;
 use app\common\exception\HttpValidateException;
 use app\common\exception\InvalidRequestMethodException;
+use think\response\Json;
 
 class Login extends BaseController
 {
@@ -27,7 +28,7 @@ class Login extends BaseController
 
     /**
      * 登录验证
-     * @return \think\response\Json
+     * @return Json
      * @throws HttpValidateException
      * @throws InvalidRequestMethodException
      * @throws LoginException
@@ -35,7 +36,7 @@ class Login extends BaseController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function check()
+    public function check(): Json
     {
         if (!$this->request->isPost()) {
             throw new InvalidRequestMethodException();

@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace app\common\exception;
 
 use think\App;
+use Exception;
 use think\exception\Handle;
 use think\Response;
 use Throwable;
@@ -31,15 +32,14 @@ class ExceptionHandler extends Handle
      */
     public function render($request, Throwable $e): Response
     {
-        if (env('app_debug')) {
-            if ($e instanceof BaseException) {
-                $this->code = $e->code;
-                $this->msg = $e->msg;
-                $this->errorCode = $e->errorCode;
-            }
-            return api_response($this->errorCode, $this->msg, [], $this->code);
+        if ($e instanceof BaseException) {
+            $this->code = $e->code;
+            $this->msg = $e->msg;
+            $this->errorCode = $e->errorCode;
+        } else if (env('app_debug')) {
+            $this->msg = $e->getMessage();
         }
 
-        return parent::render($request, $e);
+        return api_response($this->errorCode, $this->msg, [], $this->code);
     }
 }

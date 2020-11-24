@@ -13,5 +13,6 @@ return [
             'prefix' => 'sms_code_pre_',
             'expire' => 60 * 2,
         ],
+        'token_prefix' => 'token_pre_'
     ]
 ];

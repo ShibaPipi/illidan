@@ -2,14 +2,15 @@
 /**
  *
  * User: sun.yaopeng
- * Date: 2020/11/21
+ * Date: 2020/11/24
  */
+declare(strict_types=1);
 
 namespace app\common\model\mysql;
 
 use think\Model;
 
-class AdminUser extends Model
+class User extends Model
 {
     protected $autoWriteTimestamp = true;
 
@@ -20,12 +21,12 @@ class AdminUser extends Model
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public static function getByUsername(string $username)
+    public static function getByTelephone(string $telephone)
     {
-        if (empty($username)) {
+        if (empty($telephone)) {
             return false;
         }
-        return self::where(compact('username'))->find();
+        return self::where(compact('telephone'))->find();
     }
 
     /**

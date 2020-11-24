@@ -12,5 +12,12 @@ return [
             'pending' => 0,
             'delete' => 99
         ]
+    ],
+    'user' => [
+        'status' => [
+            'normal' => 1,
+            'pending' => 0,
+            'delete' => 99
+        ]
     ]
 ];
