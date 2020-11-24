@@ -11,5 +11,5 @@
 use think\facade\Route;
 
 Route::get('/', function () {
-    return session(config('illidan.admin.session_name'));
+    return admin_session();
 })->name('index');

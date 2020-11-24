@@ -91,14 +91,14 @@
       element = layui.element,
       layer = layui.layer;
 
-    layuimini.init(staticUrl + 'api/init.json'); // 左菜单数据
+    layuimini.init(staticUrl + 'api/init.json') // 左菜单数据
 
     $('.login-out').on('click', function () {
       layer.msg('退出登录成功', function () {
-        window.location = 'login.html';
-      });
-    });
-  });
+        window.location = apiUrl + 'logout/index'
+      })
+    })
+  })
 </script>
 </body>
 </html>

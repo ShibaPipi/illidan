@@ -12,6 +12,6 @@ class Error
      */
     public function __call($name, $arguments)
     {
-        return api_response(config('code.controller_not_found'), "找不到控制器 ${name}", null, 400);
+        return api_response(config('code.controller_not_found'), "找不到控制器", null, 400);
     }
 }

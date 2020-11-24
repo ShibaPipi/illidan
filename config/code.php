@@ -7,7 +7,8 @@
 
 return [
     'success' => 1,
-    'error' => 0,
+    'internal_server_error' => 999,
+    'general_param_error'=>10001,
     'not_login' => -1,
     'controller_not_found' => -3,
     'method_not_found' => -4

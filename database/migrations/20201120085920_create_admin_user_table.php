@@ -4,7 +4,7 @@ use Phinx\Db\Adapter\MysqlAdapter;
 use think\migration\Migrator;
 use think\migration\db\Column;
 
-class CreateUserTable extends Migrator
+class CreateAdminUserTable extends Migrator
 {
     /**
      * Change Method.
@@ -38,7 +38,7 @@ class CreateUserTable extends Migrator
             ->addColumn('last_login_time', 'integer', ['default' => 0, 'comment' => '最后登录时间'])
             ->addColumn('last_login_ip', 'string', ['limit' => 100, 'default' => '', 'comment' => '最后登录 IP'])
             ->addColumn('operator_id', 'integer', ['default' => 0, 'comment' => '操作人 id'])
-            ->addIndex(['username'], ['unique' => true])
+            ->addIndex('username', ['unique' => true])
             ->create();
     }
 }

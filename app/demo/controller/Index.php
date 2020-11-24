@@ -4,8 +4,8 @@ declare (strict_types=1);
 
 namespace app\demo\controller;
 
+use app\demo\exception\LoginException;
 use app\BaseController;
-use think\exception\HttpException;
 
 class Index extends BaseController
 {
@@ -16,7 +16,7 @@ class Index extends BaseController
 
     public function hello($name = 'ThinkPHP6')
     {
-//        throw new HttpException(404, 'not found');
-        return 'hello,' . $name;
+        throw new LoginException(['msg'=>'343434343']);
+//        return 'hello,' . $name;
     }
 }
