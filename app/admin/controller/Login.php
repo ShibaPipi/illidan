@@ -23,6 +23,9 @@ class Login extends BaseController
      */
     public function index()
     {
+        if (admin_session()) {
+            return redirect((string)url('index/index'));
+        }
         return view();
     }
 

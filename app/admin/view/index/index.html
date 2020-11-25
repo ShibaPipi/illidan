@@ -87,16 +87,12 @@
 <script src="{{__STATIC_PATH__}}admin/js/config.js"></script>
 <script>
   layui.use(['element', 'layer', 'layuimini'], function () {
-    var $ = layui.jquery,
-      element = layui.element,
-      layer = layui.layer;
+    var $ = layui.jquery;
 
     layuimini.init(staticUrl + 'api/init.json') // 左菜单数据
 
     $('.login-out').on('click', function () {
-      layer.msg('退出登录成功', function () {
-        window.location = apiUrl + 'logout/index'
-      })
+      window.location = apiUrl + 'logout/index'
     })
   })
 </script>

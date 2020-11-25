@@ -35,7 +35,7 @@ class CreateUserTable extends Migrator
             ->addColumn('password', 'string', ['limit' => 32, 'default' => md5('123456'), 'comment' => '用户密码'])
             ->addColumn('login_type', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1, 'comment' => '登录方式：1手机号验证码，2账号密码'])
             ->addColumn('remember_days', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1, 'comment' => '会话保存天数：1->7天，2->30天'])
-            ->addColumn('gender', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1, 'comment' => '性别：1男，2女，3保密'])
+            ->addColumn('gender', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 0, 'comment' => '性别：0保密，1男，2女'])
             ->addColumn('status', 'integer', ['limit' => MysqlAdapter::INT_TINY, 'signed' => false, 'default' => 1, 'comment' => '状态：0待审核，1正常，99删除'])
             ->addColumn('create_time', 'integer', ['default' => 0, 'comment' => '创建时间'])
             ->addColumn('update_time', 'integer', ['default' => 0, 'comment' => '更新时间'])

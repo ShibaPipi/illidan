@@ -23,9 +23,6 @@ class User extends Model
      */
     public static function getByTelephone(string $telephone)
     {
-        if (empty($telephone)) {
-            return false;
-        }
         return self::where(compact('telephone'))->find();
     }
 
@@ -36,9 +33,18 @@ class User extends Model
      */
     public static function updateById(int $id, array $data)
     {
-        if (empty($id) || empty($data)) {
-            return false;
-        }
         return self::where(compact('id'))->save($data);
+    }
+
+    /**
+     * @param int $id
+     * @return array|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public static function getUserById(int $id)
+    {
+        return self::where('status', config('enum.user.status.normal'))->find($id);
     }
 }

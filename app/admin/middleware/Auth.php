@@ -13,13 +13,16 @@ use app\Request;
 
 class Auth
 {
+    /**
+     * 根据 session 判断用户是否登录
+     * @param Request $request
+     * @param Closure $next
+     * @return mixed|\think\response\Redirect
+     */
     public function handle(Request $request, Closure $next)
     {
-        if (empty(admin_session()) && false === strpos($request->pathinfo(), 'login')) {
+        if (empty(admin_session())) {
             return redirect((string)url('login/index'));
-        }
-        if (admin_session() && false !== strpos($request->pathinfo(),'login')) {
-            return redirect((string)url('index/index'));
         }
         return $next($request);
     }

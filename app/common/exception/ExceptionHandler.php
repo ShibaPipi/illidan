@@ -11,6 +11,7 @@ namespace app\common\exception;
 use think\App;
 use Exception;
 use think\exception\Handle;
+use think\exception\ValidateException;
 use think\Response;
 use Throwable;
 
@@ -36,6 +37,10 @@ class ExceptionHandler extends Handle
             $this->code = $e->code;
             $this->msg = $e->msg;
             $this->errorCode = $e->errorCode;
+        } elseif ($e instanceof ValidateException) {
+            $this->code = 400;
+            $this->msg = $e->getMessage();
+            $this->errorCode = 10001;
         } else if (env('app_debug')) {
             $this->msg = $e->getMessage();
         }

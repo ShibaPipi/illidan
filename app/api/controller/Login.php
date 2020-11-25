@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace app\api\controller;
 
 use app\api\exception\LoginException;
-use app\api\validate\User;
+use app\api\validate\User as UserValidate;
 use app\BaseController;
 use app\common\exception\HttpValidateException;
 use app\common\service\User as UserService;
@@ -20,11 +20,14 @@ class Login extends BaseController
      * @return \think\response\Json
      * @throws HttpValidateException
      * @throws LoginException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function index()
     {
-        $validate = validate(User::class)->scene('login');
-        if (!$validate->check(request()->post(['telephone', 'sms_code', 'type']))) {
+        $validate = validate(UserValidate::class)->scene('login');
+        if (!$validate->check(request()->only(['telephone', 'sms_code', 'login_type']))) {
             throw new HttpValidateException(['msg' => $validate->getError()]);
         }
 
@@ -33,6 +36,6 @@ class Login extends BaseController
             throw new LoginException();
         }
 
-        return api_success('登录成功', 201, $result);
+        return api_success('登录成功', $result, 201);
     }
 }

@@ -27,7 +27,7 @@ if (!function_exists('api_success')) {
      * @param array $data
      * @return Json
      */
-    function api_success(string $message = 'success', int $httpStatus = 200, array $data = []): Json
+    function api_success(string $message = 'success', array $data = [], int $httpStatus = 200): Json
     {
         return api_response(config('code.success'), $message, $data, $httpStatus);
     }
