@@ -20,6 +20,7 @@ class Login extends BaseController
      * @return \think\response\Json
      * @throws HttpValidateException
      * @throws LoginException
+     * @throws \app\common\exception\RedisException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException

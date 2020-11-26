@@ -12,6 +12,7 @@ Route::post('sms_code', 'sms/code');
 Route::post('login', 'login/index');
 
 Route::group(function () {
+    Route::get('logout', 'logout/index');
     Route::get('user_info', 'user/info');
     Route::put('user_update', 'user/update');
 })->middleware(Auth::class);

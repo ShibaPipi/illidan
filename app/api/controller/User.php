@@ -46,13 +46,15 @@ class User extends BaseController
      * @return Json
      * @throws HttpValidateException
      * @throws UpdateDataException
+     * @throws \app\common\exception\RedisException
      */
     public function update(): Json
     {
+        $id = $this->userId;
         $username = input('username', '', 'trim');
         $gender = input('gender', 0, 'intval');
         $validate = validate(UserValidate::class)->scene('update');
-        if (!$validate->check(compact('username', 'gender'))) {
+        if (!$validate->check(compact('id','username', 'gender'))) {
             throw new HttpValidateException(['msg' => $validate->getError()]);
         }
 

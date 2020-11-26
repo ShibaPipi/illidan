@@ -8,12 +8,13 @@ declare(strict_types=1);
 
 namespace app\common\service;
 
-use app\api\exception\LoginException;
+use app\common\exception\RedisException;
 use app\common\exception\UpdateDataException;
 use app\common\exception\UserNotFund;
 use app\common\library\Time;
 use app\common\library\Token;
 use app\common\model\mysql\User as UserModel;
+use think\facade\Db;
 
 class User
 {
@@ -25,8 +26,8 @@ class User
     }
 
     /**
-     * @return array|bool
-     * @throws LoginException
+     * @return array
+     * @throws RedisException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -63,11 +64,9 @@ class User
         }
 
         $token = Token::generateForLogin($telephone);
-        $res = cache(config('illidan.api.token_prefix') . $token,
-            compact('id', 'username'),
-            Time::userExpireAt($days));
+        self::saveToCache($token, compact('id', 'username', 'days'), $days);
 
-        return $res ? compact('token', 'username') : false;
+        return compact('token', 'username');
     }
 
     /**
@@ -92,14 +91,69 @@ class User
      * @param int $id
      * @param array $data
      * @return bool
+     * @throws RedisException
      * @throws UpdateDataException
      */
     public function update(int $id, array $data): bool
     {
-        if (!$this->user::updateById($id, $data) ) {
-            throw new UpdateDataException();
+        Db::transaction(function () use ($id, $data) {
+            $token = request()->token;
+            $rememberDays = self::getCache($token)['days'];
+            $this->user::updateById($id, $data);
+            self::saveToCache($token, [
+                'id' => $id,
+                'username' => $data['username'],
+                'days' => $rememberDays
+            ], $rememberDays);
+        });
+
+        return true;
+    }
+
+    /**
+     * 获取 redis 中的用户信息
+     * @param string $token
+     * @return array
+     * @throws RedisException
+     */
+    public static function getCache(string $token): array
+    {
+        $user = cache(config('illidan.api.token_prefix') . $token);
+        if (!$user) {
+            throw new RedisException(['msg' => '用户数据缓获取失败']);
         }
-//        TODO: 更新 redis 中的用户信息
+        return $user;
+    }
+
+    /**
+     * 将用户信息写入 redis
+     * @param string $token
+     * @param array $data
+     * @param int $days
+     * @return bool
+     * @throws RedisException
+     */
+    public static function saveToCache(string $token, array $data, int $days): bool
+    {
+        if (!cache(config('illidan.api.token_prefix') . $token,
+            $data, Time::userExpireAt($days))
+        ) {
+            throw new RedisException(['msg' => '用户数据缓存写入失败']);
+        }
+        return true;
+    }
+
+    /**
+     * 从 redis 清除用户信息
+     * @param string $token
+     * @return bool
+     * @throws RedisException
+     */
+    public static function removeCache(string $token): bool
+    {
+        if (!cache(config('illidan.api.token_prefix') . $token, null)) {
+            throw new RedisException(['msg' => '用户数据缓存清除失败']);
+        }
         return true;
     }
 }

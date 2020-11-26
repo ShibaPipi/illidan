@@ -13,7 +13,7 @@ use think\Validate;
 class User extends Validate
 {
     protected $rule = [
-        'username' => 'require|unique:user',
+        'username' => 'require|unique:User',
         'telephone' => 'require',
         'sms_code' => 'require|number|min:4',
         'login_type' => 'require|in:1,2',
