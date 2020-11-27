@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace app\api\controller;
 
-use app\api\validate\User;
+use app\api\validate\User as UserValidate;
 use app\BaseController;
 use app\common\exception\HttpValidateException;
 use app\common\exception\SmsException;
@@ -26,15 +26,8 @@ class Sms extends BaseController
      */
     public function code(): Json
     {
-        $telephone = input('telephone', '', 'trim');
-        $validate = validate(User::class)->scene('send_code');
-        if (!$validate->check(compact('telephone'))) {
-            throw new HttpValidateException(['msg' => $validate->getError()]);
-        }
-
-        if (!SmsService::sendCode($telephone, 6)) {
-            throw new SmsException();
-        }
+        (new UserValidate)->scene('send_code')->execute()
+        && SmsService::sendCode(input('telephone'), 6);
 
         return api_success('发送验证码成功');
     }

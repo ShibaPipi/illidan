@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace app\common\exception;
 
-class ModelNotFound extends BaseException
+class ModelNotFoundException extends BaseException
 {
     public $code = 404;
 

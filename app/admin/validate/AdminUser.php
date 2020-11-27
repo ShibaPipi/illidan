@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace app\admin\validate;
 
-use think\Validate;
+use app\common\validate\BaseValidate;
 
-class AdminUser extends Validate
+class AdminUser extends BaseValidate
 {
     protected $rule = [
         'username' => 'require',
@@ -30,9 +30,6 @@ class AdminUser extends Validate
      */
     protected function checkCaptcha(string $value)
     {
-        if (!captcha_check($value)) {
-            return '验证码错误';
-        }
-        return true;
+        return captcha_check($value) ?: '验证码错误';
     }
 }

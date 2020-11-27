@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace app\common\service;
 
+use app\common\exception\ModelNotFoundException;
 use app\common\exception\RedisException;
 use app\common\exception\UpdateDataException;
-use app\common\exception\UserNotFund;
 use app\common\library\Time;
 use app\common\library\Token;
 use app\common\model\mysql\User as UserModel;
@@ -18,11 +18,11 @@ use think\facade\Db;
 
 class User
 {
-    public $user = null;
+    public $model = null;
 
     public function __construct()
     {
-        $this->user = new UserModel;
+        $this->model = new UserModel;
     }
 
     /**
@@ -41,27 +41,19 @@ class User
 //            throw new LoginException(['msg' => '验证码不正确']);
 //        }
         $timestamp = time();
-        $user = $this->user::getByTelephone($telephone);
         $data = [
             'remember_days' => $days,
-            'update_time' => $timestamp,
             'last_login_ip' => request()->ip(),
             'last_login_time' => $timestamp
         ];
-        if (!$user) {
-            $data += request()->post(['telephone', 'login_type']);
-            $username = '小蒜瓣儿_' . $telephone;
-            $data += [
-                'username' => $username,
-                'status' => config('enum.user.status.normal'),
-                'create_time' => $timestamp
-            ];
-            $id = $this->user->insertGetId($data);
-        } else {
-            $id = $user->id;
-            $this->user::updateById($id, $data);
-            $username = $user->username;
+        if (!$user = $this->model::getByTelephone($telephone)) {
+            $user = $this->model;
+            $data += request()->only(['telephone', 'login_type']);
+            $data += ['username' => '小蒜瓣儿_' . $telephone];
         }
+        $user->save($data);
+        $id = $user->id;
+        $username = $user->username;
 
         $token = Token::generateForLogin($telephone);
         self::saveToCache($token, compact('id', 'username', 'days'), $days);
@@ -72,18 +64,16 @@ class User
     /**
      * @param int $id
      * @return array
-     * @throws UserNotFund
+     * @throws ModelNotFoundException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getUserById(int $id): array
     {
-        $user = $this->user::getUserById($id);
-        if (!$user) {
-            throw new UserNotFund();
+        if (!$user = $this->model::getUserById($id)) {
+            throw new ModelNotFoundException(['msg' => '用户不存在']);
         }
-
         return $user->toArray();
     }
 
@@ -99,14 +89,13 @@ class User
         Db::transaction(function () use ($id, $data) {
             $token = request()->token;
             $rememberDays = self::getCache($token)['days'];
-            $this->user::updateById($id, $data);
+            $this->model::updateById($id, $data);
             self::saveToCache($token, [
                 'id' => $id,
                 'username' => $data['username'],
                 'days' => $rememberDays
             ], $rememberDays);
         });
-
         return true;
     }
 
@@ -118,8 +107,7 @@ class User
      */
     public static function getCache(string $token): array
     {
-        $user = cache(config('illidan.api.token_prefix') . $token);
-        if (!$user) {
+        if (!$user = cache(config('illidan.api.token_prefix') . $token)) {
             throw new RedisException(['msg' => '用户数据缓获取失败']);
         }
         return $user;

@@ -19,5 +19,12 @@ return [
             'pending' => 0,
             'delete' => 99
         ]
+    ],
+    'category' => [
+        'status' => [
+            'normal' => 1,
+            'pending' => 0,
+            'delete' => 99
+        ]
     ]
 ];

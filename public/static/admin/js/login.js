@@ -32,16 +32,13 @@ layui.use(['form'], function () {
     // window.location = '../index.html';
     // return false;
     $('.input-val').val('')
-    url = apiUrl + 'login'
     $.ajax({
-      url,
+      url: apiUrl + 'login',
       data,
       type: 'POST',
       success(res) {
         if (res.code == 1) {
-          layer.msg(res.message, function () {
-            window.location = apiUrl + 'index';
-          })
+          window.location = apiUrl + 'index';
         }
       },
       error(res) {

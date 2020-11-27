@@ -92,7 +92,7 @@
     layuimini.init(staticUrl + 'api/init.json') // 左菜单数据
 
     $('.login-out').on('click', function () {
-      window.location = apiUrl + 'logout/index'
+      window.location = '{{:url("logout/index")}}'
     })
   })
 </script>

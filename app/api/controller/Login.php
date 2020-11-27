@@ -27,13 +27,9 @@ class Login extends BaseController
      */
     public function index()
     {
-        $validate = validate(UserValidate::class)->scene('login');
-        if (!$validate->check(request()->only(['telephone', 'sms_code', 'login_type']))) {
-            throw new HttpValidateException(['msg' => $validate->getError()]);
-        }
+        (new UserValidate)->scene('login')->execute();
 
-        $result = (new UserService)->login();
-        if (!$result) {
+        if (!$result = (new UserService)->login()) {
             throw new LoginException();
         }
 

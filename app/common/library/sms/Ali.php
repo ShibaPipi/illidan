@@ -24,10 +24,6 @@ class Ali implements SmsInterface
      */
     public static function sendCode(string $phone, int $code): bool
     {
-        if (empty($phone) || empty($code)) {
-            return false;
-        }
-
         AlibabaCloud::accessKeyClient(config('ali_cloud.sms.access_key_id'), config('ali_cloud.sms.access_key_secret'))
             ->regionId(config('ali_cloud.sms.region_id'))
             ->asDefaultClient();
@@ -58,7 +54,6 @@ class Ali implements SmsInterface
             Log::error("Ali-sms-sendCode-to-{$phone}-ServerException: " . $e->getErrorMessage());
             return false;
         }
-
         return isset($result['Code']) && 'OK' === $result['Code'];
     }
 }

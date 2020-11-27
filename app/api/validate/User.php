@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace app\api\validate;
 
-use think\Validate;
+use app\common\validate\BaseValidate;
 
-class User extends Validate
+class User extends BaseValidate
 {
     protected $rule = [
         'username' => 'require|unique:User',

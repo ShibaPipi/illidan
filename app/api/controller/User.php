@@ -19,25 +19,25 @@ use think\response\Json;
 class User extends BaseController
 {
     protected $userId = 0;
-    protected $userService = null;
+    protected $service = null;
 
-    public function __construct(App $app, UserService $userService)
+    public function __construct(App $app, UserService $service)
     {
         $this->userId = intval(request()->userId);
-        $this->userService = $userService;
+        $this->service = $service;
         parent::__construct($app);
     }
 
     /**
      * @return Json
-     * @throws \app\common\exception\UserNotFund
+     * @throws \app\common\exception\ModelNotFoundException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function info(): Json
     {
-        $user = $this->userService->getUserById($this->userId);
+        $user = $this->service->getUserById($this->userId);
 
         return api_success('ok', $user);
     }
@@ -50,15 +50,8 @@ class User extends BaseController
      */
     public function update(): Json
     {
-        $id = $this->userId;
-        $username = input('username', '', 'trim');
-        $gender = input('gender', 0, 'intval');
-        $validate = validate(UserValidate::class)->scene('update');
-        if (!$validate->check(compact('id','username', 'gender'))) {
-            throw new HttpValidateException(['msg' => $validate->getError()]);
-        }
-
-        $this->userService->update($this->userId, compact('username', 'gender'));
+        (new UserValidate)->scene('update')->execute()
+        && $this->service->update($this->userId, request()->only(['username', 'gender']));
 
         return api_success();
     }

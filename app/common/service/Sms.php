@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace app\common\service;
 
+use app\common\exception\SmsException;
 use app\common\library\factory\Sms as SmsFactory;
 use app\common\library\Num;
 
@@ -18,22 +19,18 @@ class Sms
      * @param int $len
      * @param string $type
      * @return bool
-     * @throws \AlibabaCloud\Client\Exception\ClientException
+     * @throws SmsException
      * @throws \ReflectionException
      */
     public static function sendCode(string $telephone, int $len, string $type = 'ali'): bool
     {
         $code = Num::random($len);
-
-        $result = SmsFactory::initClass($type)::sendCode($telephone, $code);
-        if ($result) {
-            cache(
-                config('illidan.api.sms_code.prefix') . $telephone,
-                $code,
-                config('illidan.api.sms_code.expire')
-            );
+        if ($result = SmsFactory::initClass($type)::sendCode($telephone, $code)) {
+            cache(config('illidan.api.sms_code.prefix') . $telephone,
+                $code, config('illidan.api.sms_code.expire'));
+        } else {
+            throw new SmsException();
         }
-
         return $result;
     }
 }

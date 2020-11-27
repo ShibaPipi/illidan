@@ -7,25 +7,20 @@
 
 namespace app\common\model\mysql;
 
-use think\Model;
-
-class AdminUser extends Model
+class AdminUser extends BaseModel
 {
-    protected $autoWriteTimestamp = true;
-
     /**
      * @param string $username
-     * @return array|bool|Model|null
+     * @return array|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public static function getByUsername(string $username)
     {
-        if (empty($username)) {
-            return false;
-        }
-        return self::where(compact('username'))->find();
+        return self::where(compact('username'))
+            ->where('status', config('enum.admin_user.status.normal'))
+            ->find();
     }
 
     /**
@@ -35,9 +30,6 @@ class AdminUser extends Model
      */
     public static function updateById(int $id, array $data)
     {
-        if (empty($id) || empty($data)) {
-            return false;
-        }
         return self::where(compact('id'))->save($data);
     }
 }

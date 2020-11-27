@@ -8,15 +8,11 @@ declare(strict_types=1);
 
 namespace app\common\model\mysql;
 
-use think\Model;
-
-class User extends Model
+class User extends BaseModel
 {
-    protected $autoWriteTimestamp = true;
-
     /**
      * @param string $username
-     * @return array|bool|Model|null
+     * @return array|bool|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -38,7 +34,7 @@ class User extends Model
 
     /**
      * @param int $id
-     * @return array|Model|null
+     * @return array|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
