@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * User: sun.yaopeng
+ * Created By 皮神
  * Date: 2020/11/25
  */
 declare(strict_types=1);
@@ -53,6 +53,6 @@ class User extends BaseController
         (new UserValidate)->scene('update')->execute()
         && $this->service->update($this->userId, request()->only(['username', 'gender']));
 
-        return api_success();
+        return api_created_or_updated();
     }
 }

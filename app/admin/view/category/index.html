@@ -9,22 +9,22 @@
   <link rel="stylesheet" href="{{__STATIC_PATH__}}admin/lib/layui-v2.5.4/css/layui.css" media="all">
   <link rel="stylesheet" href="{{__STATIC_PATH__}}admin/css/public.css" media="all">
   <style>
-    .inoutCls {
-      height: 22px;
-      line-height: 22px;
-      padding: 0 5px;
-      font-size: 12px;
-      background-color: #1E9FFF;
-      max-width: 80px;
-      border: none;
-      color: #fff;
-      margin-left: 10px;
-      display: inline-block;
-      white-space: nowrap;
-      text-align: center;
-      border-radius: 2px;
-      cursor: pointer;
-    }
+      .inoutCls {
+          height: 22px;
+          line-height: 22px;
+          padding: 0 5px;
+          font-size: 12px;
+          background-color: #1E9FFF;
+          max-width: 80px;
+          border: none;
+          color: #fff;
+          margin-left: 10px;
+          display: inline-block;
+          white-space: nowrap;
+          text-align: center;
+          border-radius: 2px;
+          cursor: pointer;
+      }
   </style>
 </head>
 <body>
@@ -37,7 +37,7 @@
       <table class="layui-table">
         <colgroup>
           <col width="40">
-          <col width="60">
+          <col width="120">
           <col width="100">
           <col width="130">
           <col width="130">
@@ -59,24 +59,36 @@
         </thead>
         <tbody>
         <!--一级类目循环-->
-        {{volist name='list' id='vo'}}
+        {{volist name='list.data' id='vo'}}
         <tr>
           <td>{{$vo.id}}</td>
-          <td>1</td>
           <td>
             <div class="layui-input-inline">
-              <input type="text" value="1" data-id="1" class="changeSort layui-input">
+              <input type="text" value="{{$vo.name}}" data-id="{{$vo.id}}" class="editName layui-input">
             </div>
           </td>
-          <td>创建时间</td>
-          <td>更新时间</td>
-          <td>sw</td>
-          <td data-id="1">
-            <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">
+          <td>
+            <div class="layui-input-inline">
+              <input type="text" value="{{$vo.sort}}" data-id="{{$vo.id}}" class="changeSort layui-input">
+            </div>
+          </td>
+          <td>{{$vo.create_time}}</td>
+          <td>{{$vo.update_time}}</td>
+          <td>{{$vo.operator_id}}</td>
+          <td data-id="{{$vo.id}}">
+            <input
+                type="checkbox"
+                name="status"
+                lay-skin="switch"
+                lay-filter="switchStatus"
+                lay-text="ON|OFF"
+                {{if $vo.status== 1}}checked{{/if}}
+            >
           </td>
           <td>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete del-child" data-ptype="1" lay-event="delete" data-id="$id">删除</a>
-            <a href="{{:url('/admin/index', ['pid' => 1])}}">获取子栏目</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete delete" data-ptype="1"
+               lay-event="delete" data-id="{{$vo.id}}">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" href="{{:url('category/index', ['pid' => $vo.id])}}">子栏目({{$vo.children_num}})</a>
           </td>
           {{/volist}}
         </tr>
@@ -86,7 +98,6 @@
     </div>
     <div id="pages"></div>
   </div>
-
 </div>
 <script src="{{__STATIC_PATH__}}admin/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <script src="{{__STATIC_PATH__}}admin/lib/layui-v2.5.4/layui.js" charset="utf-8"></script>
@@ -95,30 +106,34 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
   layui.use(['form', 'laypage'], function () {
-    var form = layui.form
-      , laypage = layui.laypage;
-
+    var form = layui.form, laypage = layui.laypage;
     laypage.render({ //分页
-      elem: 'pages'
-      , count: 100
-      , theme: '#FFB800'
+      elem: 'pages',
+      theme: '#FFB800',
+      count: '{{$list.total}}',
+      limit: '{{$list.per_page}}',
+      curr: '{{$list.current_page}}',
+      jump: function (obj, first) {
+        if (!first) {
+          location.href = '?page=' + obj.curr + '&pid={{$pid}}'
+        }
+      }
     });
-
     //监听状态 更改
-    form.on('switch(switchTest)', function (obj) {
-      console.log(obj.elem.checked, '改变状态')
-
+    form.on('switch(switchStatus)', function (obj) {
       let id = obj.othis.parent().attr('data-id');
       let status = obj.elem.checked ? 1 : 0;
-      $.ajax({
-        url: '{{:url("admin/change")}}?id=' + id + '&status=' + status,
-        success: (res) => {
-
+      let url = '{{:url("status")}}?id=' + id + '&status=' + status
+      layObj.get(url, (res) => {
+          if (1 === res.code) {
+            location.reload()
+          } else {
+            layer.msg(res.message)
+          }
         }
-      });
-      return false;
+      )
+      return false
     });
-
 
     function editCls(that, id, type) { // 分类修改  type 是 1 顶级  2级  3级
       let name = $(that).val();
@@ -144,38 +159,50 @@
       })
     }
 
-    // 删除二级分类
-    $('.del-child').on('click', function () {
-      let ptype = $(this).attr('data-ptype'); // fu
-      let id = $(this).attr('data-id'); // fu
-      let msg = '';
-      if (ptype == 1) { // 等级类目
-        msg = '一';
-      } else if (ptype == 2) {
-        msg = '二';
-      }
-      layObj.box(`是否删除${msg}级分类`, () => {
-        let url = '{{:url("admin/del")}}?id=' + id
+    $('.delete').on('click', function () {
+      let id = $(this).attr('data-id');
+      layObj.box(`是否删除此分类`, () => {
+        let url = '{{:url("status")}}?id=' + id + '&status=99'
         layObj.get(url, (res) => {
-          $(this).parent().remove()
+          if (1 === res.code) {
+            location.reload()
+          } else {
+            layer.msg(res.message)
+          }
         })
-
       })
     })
 
-    $('.changeSort').on('change', function () {
+    $('.editName').on('change', function () {
       let id = $(this).attr('data-id');
       let val = $(this).val();
-
       if (!val) {
         return;
       }
-      // let url = '{{:url("admin/sort")}}?id=' + id + '&sort='+val;
-      let url = 'http:www.baidu.com';
-      layObj.get(url, function (res) {
-        console.log(res, 'sort');
+      let url = '{{:url("name")}}?id=' + id + '&name=' + val;
+      layObj.get(url, (res) => {
+        if (1 === res.code) {
+          location.reload()
+        } else {
+          layer.msg(res.message)
+        }
       })
+    })
+  })
 
+  $('.changeSort').on('change', function () {
+    let id = $(this).attr('data-id');
+    let val = $(this).val();
+    if (!val) {
+      return;
+    }
+    let url = '{{:url("sort")}}?id=' + id + '&sort=' + val;
+    layObj.get(url, (res) => {
+      if (1 === res.code) {
+        location.reload()
+      } else {
+        layer.msg(res.message)
+      }
     })
   })
 </script>

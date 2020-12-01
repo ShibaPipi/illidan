@@ -1,7 +1,7 @@
 <?php
 /**
  * 自定义验证基类
- * User: sun.yaopeng
+ * Created By 皮神
  * Date: 2020/11/23
  */
 declare(strict_types=1);

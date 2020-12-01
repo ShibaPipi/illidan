@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * User: sun.yaopeng
+ * Created By 皮神
  * Date: 2020/11/24
  */
 declare(strict_types=1);
@@ -39,7 +39,7 @@ class User extends BaseModel
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public static function getUserById(int $id)
+    public static function getById(int $id)
     {
         return self::where('status', config('enum.user.status.normal'))->find($id);
     }

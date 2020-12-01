@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * User: sun.yaopeng
+ * Created By 皮神
  * Date: 2020/11/27
  */
 declare(strict_types=1);
@@ -20,7 +20,13 @@ class Category extends BaseModel
     public static function getAll(string $fields = '*')
     {
         return self::where('status', config('enum.category.status.normal'))
-            ->field($fields)->select();
+            ->field($fields)
+            ->order([
+                'pid' => 'asc',
+                'sort' => 'desc',
+                'id' => 'desc'
+            ])
+            ->select();
     }
 
     /**
@@ -29,7 +35,7 @@ class Category extends BaseModel
      * @return \think\Paginator
      * @throws \think\db\exception\DbException
      */
-    public function getList(array $where, int $size)
+    public static function getList(array $where, int $size)
     {
         return self::where('status', '<>', config('enum.category.status.delete'))
             ->where($where)
@@ -38,5 +44,18 @@ class Category extends BaseModel
                 'id' => 'desc'
             ])
             ->paginate($size);
+    }
+
+    /**
+     * @param array $where
+     * @return mixed
+     */
+    public static function getChildCountInPids(array $where)
+    {
+        return self::where('pid', 'in', $where['pids'])
+            ->where('status', '<>', config('enum.category.status.delete'))
+            ->field(['pid', 'count(*) AS count'])
+            ->group('pid')
+            ->select();
     }
 }

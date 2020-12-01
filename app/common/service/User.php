@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * User: sun.yaopeng
+ * Created By 皮神
  * Date: 2020/11/24
  */
 declare(strict_types=1);
@@ -71,7 +71,7 @@ class User
      */
     public function getUserById(int $id): array
     {
-        if (!$user = $this->model::getUserById($id)) {
+        if (!$user = $this->model::getById($id)) {
             throw new ModelNotFoundException(['msg' => '用户不存在']);
         }
         return $user->toArray();
