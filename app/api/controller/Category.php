@@ -8,7 +8,6 @@
 namespace app\api\controller;
 
 use app\BaseController;
-use app\common\library\Arr;
 use think\App;
 use app\common\service\Category as CategoryService;
 

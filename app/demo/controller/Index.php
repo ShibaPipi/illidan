@@ -16,7 +16,6 @@ class Index extends BaseController
 
     public function hello($name = 'ThinkPHP6')
     {
-        throw new LoginException(['msg'=>'343434343']);
-//        return 'hello,' . $name;
+        return $name;
     }
 }

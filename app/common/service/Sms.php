@@ -10,7 +10,7 @@ namespace app\common\service;
 
 use app\common\exception\SmsException;
 use app\common\library\factory\Sms as SmsFactory;
-use app\common\library\Num;
+use app\common\library\support\Num;
 
 class Sms
 {

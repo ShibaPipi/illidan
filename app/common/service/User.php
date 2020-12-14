@@ -11,7 +11,7 @@ namespace app\common\service;
 use app\common\exception\ModelNotFoundException;
 use app\common\exception\RedisException;
 use app\common\exception\UpdateDataException;
-use app\common\library\Time;
+use app\common\library\support\Time;
 use app\common\library\Token;
 use app\common\model\mysql\User as UserModel;
 use think\facade\Db;

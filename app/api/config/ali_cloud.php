@@ -6,11 +6,11 @@
  */
 return [
     'sms' => [
-        'host' => 'dysmsapi.aliyuncs.com',
-        'access_key_id' => 'LTAI4GKTW6o9qsMjpyA8cnGH',
-        'access_key_secret' => 'C5Ta5JYlrQo3A5UbogmwBGuaOoePE9',
-        'region_id' => 'cn-hangzhou',
-        'template_code' => 'SMS_205617647',
-        'sign_name' => '蒜瓣儿网'
+        'host' => env('sms.host'),
+        'access_key_id' => env('sms.access_key_id'),
+        'access_key_secret' => env('sms.access_key_secret'),
+        'region_id' => env('sms.region_id'),
+        'template_code' => env('sms.template_code'),
+        'sign_name' => env('sms.sign_name')
     ]
 ];

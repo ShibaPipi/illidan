@@ -11,7 +11,7 @@ namespace app\common\service;
 use app\common\exception\HttpValidateException;
 use app\common\exception\ModelNotFoundException;
 use app\common\exception\UpdateDataException;
-use app\common\library\Arr;
+use app\common\library\support\Arr;
 use app\common\model\mysql\Category as CategoryModel;
 
 class Category

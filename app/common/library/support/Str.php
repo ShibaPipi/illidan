@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace app\common\library;
+namespace app\common\library\support;
 
 class Str
 {

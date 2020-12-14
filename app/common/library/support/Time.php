@@ -6,10 +6,15 @@
  */
 declare(strict_types=1);
 
-namespace app\common\library;
+namespace app\common\library\support;
 
 class Time
 {
+    /**
+     * 用户登录态过期时间
+     * @param int $type
+     * @return int
+     */
     public static function userExpireAt(int $type = 2): int
     {
         switch ($type) {

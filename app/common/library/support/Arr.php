@@ -5,7 +5,7 @@
  * Date: 2020/11/30
  */
 
-namespace app\common\library;
+namespace app\common\library\support;
 
 class Arr
 {
